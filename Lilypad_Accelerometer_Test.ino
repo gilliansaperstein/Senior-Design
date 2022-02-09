@@ -1,4 +1,4 @@
-
+//https://www.geeetech.com/wiki/index.php/LilyPad_Accelerometer_ADXL335
 const int xpin = A1;
 const int ypin = A2;
 const int zpin = A3;
