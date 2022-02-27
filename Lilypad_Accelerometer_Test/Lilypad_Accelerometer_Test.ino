@@ -44,4 +44,25 @@ void loop() {
    //
    // delay before next reading:
    delay(sampleDelay);
+   
+}
+
+//Testing to see if I can send data to PHP
+void calculation() {
+  if (client.connect("http://ec2-13-58-190-43.us-east-2.compute.amazonaws.com", 80)) 
+        {
+            Serial.println("connected");
+//            client.print("POST /test/test.php?");
+//            client.print("rpm=");
+//            client.print(REV);
+//            client.print("&Lengths=");
+//            client.print(Length);
+//            client.println("");
+//            client.println("  HTTP/1.1");
+            //client.stop();
+        }
+        else {
+             // If Arduino can't connect to the server (your computer or web page)
+            Serial.println("--> connection failed\n");
+              }[code]
 }
