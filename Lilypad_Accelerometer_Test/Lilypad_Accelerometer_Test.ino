@@ -8,9 +8,9 @@ float avg_x;
 float avg_y;
 float avg_z;
 
-int max3(int a, int b, int c)
+float max3(float a, float b, float c)
 {
-   int maxguess;
+   float maxguess;
 
    maxguess = max(a,b);  // biggest of A and B
    maxguess = max(maxguess, c);  // but maybe C is bigger?
@@ -64,6 +64,7 @@ void setup() {
   Serial.println();
 }
 
+int timeStart = millis();
 void loop() {
   float zero_G =512;
   float scale =102.3; 
@@ -93,11 +94,25 @@ void loop() {
    //change when the acceleration along an axis changes by 1G.
    //Divide the shifted sensor reading by scale to get acceleration in Gs.
 
+   float absX = abs(x_calib);
+   float absY = abs(y_calib);
+   float absZ = abs(z_calib);
+
+   float threshold = 0.5;
+
     
-   if (x_calib > 0.1 || y_calib > 0.1 || z_calib > 0.1) {
-      float move_accel = max3(abs(x_calib), abs(y_calib), abs(z_calib));
+   if (absX > threshold || absY > threshold || absZ > threshold) {
+      int currentTime = millis() - timeStart;
+      float move_accel = max3(absX, absY, absZ);
       Serial.print("Movement Detected - Acceleration = ");
       Serial.println(move_accel);
+
+//        Serial.print("X:");
+//        Serial.println(absX);
+//        Serial.print("Y:");
+//        Serial.println(absY);
+//        Serial.print("Z:");
+//        Serial.println(absZ);
    }
    
 //   Serial.print(x_calib);
