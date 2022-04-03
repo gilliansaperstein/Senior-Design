@@ -63,8 +63,8 @@ void setup() {
   Serial.print("Acceleration: ");
 }
 
-int timeStart = millis();
-int currTime;
+unsigned long timeStart = millis();
+unsigned long currTime;
 void loop() {
   int acc = 0;
   float totvect[100] = {0};
