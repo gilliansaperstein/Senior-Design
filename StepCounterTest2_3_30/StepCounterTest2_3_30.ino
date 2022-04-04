@@ -61,10 +61,14 @@ void setup() {
   Serial.print("Time Stamp: ");
   Serial.print('\t');
   Serial.print("Acceleration: ");
+  Serial.print('\t');
+  Serial.print("Steps:");
+  Serial.println("");
 }
 
 unsigned long timeStart = millis();
 unsigned long currTime;
+int steps = 0;
 void loop() {
   int acc = 0;
   float totvect[100] = {0};
@@ -72,11 +76,10 @@ void loop() {
   float xaccl[100] = {0};
   float yaccl[100] = {0};
   float zaccl[100] = {0};
-  int steps = 0;
   float zero_G =512;
   float scale =102.3; 
 
-  float threshold = 0.5;
+  float threshold = 0.9;
 
   for (int a = 0; a < 100; a++) {
     int x_reading = analogRead(xpin);
@@ -102,46 +105,33 @@ void loop() {
     totvect[a] = sqrt(((xaccl[a] - xavg) * (xaccl[a] - xavg)) + ((yaccl[a] - yavg) * (yaccl[a] - yavg)) + ((zval[a] - zavg) * (zval[a] - zavg)));
     totave[a] = (totvect[a] + totvect[a - 1]) / 2 ;
     currTime = millis() - timeStart;
+  
+  if (totave[a] > threshold && !flag)
+  {
+    steps = steps + 1;
+    flag = true; 
+   }
+
+  else if (totave[a] > threshold && flag)
+  {
+  }
+
+  else if (totave[a] < threshold  && flag)
+  {
+    flag = false;
+  }
+
     Serial.print(currTime);
     Serial.print('\t');
-    Serial.println(totave[a]);
-  
-//  if (totave[a] > threshold && !flag)
-//  {
-//    steps = steps + 1;
-//    flag = 1; }
-//
-////  else if (totave[a] > threshold && flag)
-////  {
-////    // Don’t Count
-////  }
-//
-//  if (totave[a] < threshold  && flag)
-//  {
-//    flag = false;
-//  }
-//
-//    Serial.println(steps);
-//  }
+    Serial.print(totave[a]);
+    Serial.print('\t');
+    Serial.println(steps);
 
-    
-//   if (absX > threshold || absY > threshold || absZ > threshold) {
-//      int currentTime = millis() - timeStart;
-//      float move_accel = max3(absX, absY, absZ);
-//      Serial.print("Movement Detected - Acceleration = ");
-//      Serial.println(move_accel);
-//
-////        Serial.print("X:");
-////        Serial.println(absX);
-////        Serial.print("Y:");
-////        Serial.println(absY);
-////        Serial.print("Z:");
-////        Serial.println(absZ);
-//   }
+  }
+
    
    //
    // delay before next reading:
    delay(sampleDelay);
    
-}
 }
