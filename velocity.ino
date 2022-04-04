@@ -114,7 +114,15 @@ void loop() {
     currTime = millis() - timeStart;
     Serial.print(currTime);
     Serial.print('\t');
-    Serial.println(vx);
+    Serial.print("X velocity: ");
+    Serial.print(vx);
+    Serial.print("\t");
+    Serial.print("Y velocity: ");
+    Serial.print(vy);
+    Serial.print("\t");
+    Serial.print("Z velocity: ");
+    Serial.print(vz);
+    Serial.println();
 
     vox=vx
     voy=vy
