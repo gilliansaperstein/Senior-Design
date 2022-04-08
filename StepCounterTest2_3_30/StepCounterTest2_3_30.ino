@@ -12,63 +12,23 @@ float yval[100] = {0};
 float zval[100] = {0};
 float xavg, yavg, zavg;
 
+float threshold = 0.9;
+
 bool flag = false;
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Hold still for 5 seconds");
-  Serial.println("Begin calibrating");
   analogReference(EXTERNAL); //3.3V pin
   pinMode(xpin, INPUT);
   pinMode(ypin, INPUT);
   pinMode(zpin, INPUT);
-  int timeStart = millis();
-  int counter = 0;
-  float x = 0;
-  float y = 0;
-  float z = 0;
-  float zero_G =512;
-  float scale =102.3; 
-  while (timeStart < 5000) {
-    int x_raw = analogRead(xpin);
-    float x_adjust = (float(x_raw) - zero_G)/scale;
-    x = x + x_adjust;
-    delay(1);
-    int y_raw = analogRead(ypin);
-    float y_adjust = (float(y_raw) - zero_G)/scale;
-    y = y + y_adjust;
-    delay(1);
-    int z_raw = analogRead(zpin);
-    float z_adjust = (float(z_raw) - zero_G)/scale;
-    z = z + z_adjust;
-    delay(1);
-    timeStart = millis();
-    counter++;
-  }
-  Serial.println("Calibration Complete: Begin Moving");
-  avg_x = x/counter;
-  avg_y = y/counter;
-  avg_z = z/counter;
-  Serial.print("X offset: ");
-  Serial.print(avg_x);
-  Serial.print("\t");
-  Serial.print("Y offset: ");
-  Serial.print(avg_y);
-  Serial.print("\t");
-  Serial.print("Z offset: ");
-  Serial.print(avg_z);
-  Serial.println();
-  Serial.print("Time Stamp: ");
-  Serial.print('\t');
-  Serial.print("Acceleration: ");
-  Serial.print('\t');
-  Serial.print("Steps:");
-  Serial.println("");
+  calibrate();
 }
 
 unsigned long timeStart = millis();
 unsigned long currTime;
 int steps = 0;
+
 void loop() {
   int acc = 0;
   float totvect[100] = {0};
@@ -79,7 +39,6 @@ void loop() {
   float zero_G =512;
   float scale =102.3; 
 
-  float threshold = 0.9;
 
   for (int a = 0; a < 100; a++) {
     int x_reading = analogRead(xpin);
@@ -134,4 +93,55 @@ void loop() {
    // delay before next reading:
    delay(sampleDelay);
    
+}
+
+void calibrate() {
+  Serial.println("Hold still for 5 seconds");
+  Serial.println("Begin calibrating");
+  
+  int timeStart = millis();
+  int counter = 0;
+  float x = 0;
+  float y = 0;
+  float z = 0;
+  float zero_G =512;
+  float scale =102.3; 
+  while (timeStart < 5000) {
+    int x_raw = analogRead(xpin);
+    float x_adjust = (float(x_raw) - zero_G)/scale;
+    x = x + x_adjust;
+    delay(1);
+    int y_raw = analogRead(ypin);
+    float y_adjust = (float(y_raw) - zero_G)/scale;
+    y = y + y_adjust;
+    delay(1);
+    int z_raw = analogRead(zpin);
+    float z_adjust = (float(z_raw) - zero_G)/scale;
+    z = z + z_adjust;
+    delay(1);
+    timeStart = millis();
+    counter++;
+
+  }
+  
+  avg_x = x/counter;
+  avg_y = y/counter;
+  avg_z = z/counter;
+  Serial.print("X offset: ");
+  Serial.print(avg_x);
+  Serial.print("\t");
+  Serial.print("Y offset: ");
+  Serial.print(avg_y);
+  Serial.print("\t");
+  Serial.print("Z offset: ");
+  Serial.print(avg_z);
+  Serial.println();
+  Serial.print("Time Stamp: ");
+  Serial.print('\t');
+  Serial.print("Acceleration: ");
+  Serial.print('\t');
+  Serial.print("Steps:");
+  Serial.println("");
+  
+  Serial.println("Calibration Complete: Begin Moving");
 }
