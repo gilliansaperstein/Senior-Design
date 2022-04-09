@@ -1,0 +1,11 @@
+{
+  "name": "snrdesign",
+  "version": "1.0.0",
+  "description": "communicating between HTML document and NodeJS",
+  "main": "index.js",
+  "dependencies": {
+      "serialport": "^9.0.1",
+      "socket.io": "^2.0.4"
+  }
+
+}
