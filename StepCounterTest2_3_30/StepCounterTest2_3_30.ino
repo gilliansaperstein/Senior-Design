@@ -12,7 +12,8 @@ float yval[100] = {0};
 float zval[100] = {0};
 float xavg, yavg, zavg;
 
-float threshold = 0.9;
+float threshold = 0.6;
+float timeThreshold = 500;
 
 bool flag = false;
 
@@ -29,6 +30,9 @@ unsigned long timeStart = millis();
 unsigned long currTime;
 int steps = 0;
 
+float baseline = 0;
+float baseCounter = 0;
+
 void loop() {
   int acc = 0;
   float totvect[100] = {0};
@@ -39,7 +43,7 @@ void loop() {
   float zero_G =512;
   float scale =102.3; 
 
-
+unsigned long timeOfCrossThreshold = 0;
   for (int a = 0; a < 100; a++) {
     int x_reading = analogRead(xpin);
     float x_adjust = (float(x_reading) - zero_G)/scale;
@@ -65,26 +69,52 @@ void loop() {
     totave[a] = (totvect[a] + totvect[a - 1]) / 2 ;
     currTime = millis() - timeStart;
   
-  if (totave[a] > threshold && !flag)
+  if (totave[a] > threshold && timeOfCrossThreshold == 0)
   {
     steps = steps + 1;
-    flag = true; 
+    timeOfCrossThreshold = millis();
+
+//    Serial.print(currTime);
+//    Serial.print('\t');
+//    Serial.print(totave[a]);
+//    Serial.print('\t');
+//    Serial.println(steps);
    }
 
-  else if (totave[a] > threshold && flag)
+  else if (totave[a] > threshold)
   {
+    if (millis() - timeOfCrossThreshold < timeThreshold) {
+      
+    }
+    else {
+      steps = steps + 1;
+      timeOfCrossThreshold = 0;
+    }
   }
 
-  else if (totave[a] < threshold  && flag)
+  else if (totave[a] < threshold)
   {
-    flag = false;
+    timeOfCrossThreshold = 0;
+
+    baseline = baseline + totave[a];
+    baseCounter = baseCounter + 1;
+
+    if (baseCounter >= 1000) {
+      float avg = baseline / baseCounter;
+      Serial.print("New baseline is:");
+      Serial.println(avg);
+      baseline = 0;
+      baseCounter = 0;
+      threshold = 10* baseline;
+    }
   }
 
-    Serial.print(currTime);
+  Serial.print(currTime);
     Serial.print('\t');
     Serial.print(totave[a]);
     Serial.print('\t');
     Serial.println(steps);
+
 
   }
 
