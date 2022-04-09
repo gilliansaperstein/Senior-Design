@@ -4,8 +4,7 @@
   "description": "communicating between HTML document and NodeJS",
   "main": "index.js",
   "dependencies": {
-      "serialport": "^9.0.1",
-      "socket.io": "^2.0.4"
+    "serialport": "^9.0.1",
+    "socket.io": "^4.4.1"
   }
-
 }
