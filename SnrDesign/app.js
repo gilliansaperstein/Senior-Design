@@ -25,7 +25,7 @@ var app = http.createServer(function(req, res) {
     res.end(index);
 });
 
-var io = require('socket.io').listen(app);
+var io = require('socket.io')(app);
 
 io.on('connection', function(data){
     console.log("Node.js is listening");
